@@ -2,7 +2,7 @@
 var PLAYER_MOVE_INTERVAL = setInterval(function(){ Player1.UpdatePosition() }, 17 );
 var TIME_INTERVAL = setInterval(function(){ GameTime.UpdateTime() }, 500);
 
-var curTime = 60
+var curTime = 60;
 
 // func
 function returnListFromObj(obj){ return Object.keys(obj); }
@@ -49,7 +49,7 @@ function Time(){
         this.SetTime();
         this.UpdateUI();
 
-    }
+    };
 
     // get methods
 
@@ -61,7 +61,7 @@ function Time(){
         if (_t == "M" || _t == "m") { return this.minute }
         if (_t == "B" || _t == "b") { return this.hour + ":" + this.minute }
 
-    }
+    };
     
     // set methods
 
@@ -75,18 +75,18 @@ function Time(){
         this.hour = String(this.hour);
         this.minute = String(this.minute);
 
-    }
+    };
 
     // update methods
 
-    Time.prototype.UpdateTime = function(){ curTime ++ ; this.SetTime() ; this.UpdateUI(); } 
+    Time.prototype.UpdateTime = function(){ curTime ++ ; this.SetTime() ; this.UpdateUI(); };
 
     Time.prototype.UpdateUI = function(){
 
         setProperty("TIME_HOUR","text", this.hour);
         setProperty("TIME_MIN","text", this.minute);
 
-    }
+    };
 
 }
 
@@ -119,9 +119,9 @@ function Plant(id, type, position, timePlanted){
             "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 1},
             "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 10},
             "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 20}
-        }
+        };
 
-        var p = image(_id, sp)
+        var p = image(_id, sp);
         setPosition(_id, pos.X + sOffsets[ty].X, pos.Y + sOffsets[ty].Y);
 
         //Tween.easePosition(_id, {X: pos.X + 2, Y: -50}, {X: pos.X + 2, Y: pos.Y + 12}, 200, "bounceOut");
@@ -139,7 +139,7 @@ function Plant(id, type, position, timePlanted){
             sp = String(ty + "_" + st + ".png");
             setImageURL(_id, sp);
 
-        }, sOffsets[ty].TBS * 1000)
+        }, sOffsets[ty].TBS * 1000);
 
         this.sprite = sp;
         this.stage = st;
@@ -148,7 +148,7 @@ function Plant(id, type, position, timePlanted){
         this.type = ty;
         this.fullygrown = fg;
 
-    }
+    };
 
     // update methods
 
@@ -169,7 +169,7 @@ function Plant(id, type, position, timePlanted){
                 var t3 = setTimeout(function(){
 
                     deleteElement(_id);
-                    removeItem( Player1.interactablesOcc , Player1.interactablesOcc.indexOf(_id) )
+                    removeItem( Player1.interactablesOcc , Player1.interactablesOcc.indexOf(_id) );
                     clearTimeout(t3);
         
                 },1000);
@@ -178,7 +178,7 @@ function Plant(id, type, position, timePlanted){
 
          },295);
 
-    }
+    };
 
 }
 
@@ -420,21 +420,21 @@ function Player(id, initState, initDirection, initX, initY){
             3: {Type: "Seeds", Item: "Strawberry"},
             4: {Type: "Seeds", Item: "Pumpkin"},
 
-        }
+        };
 
         for (var i = 1 ; i < 5 ; i ++) { setProperty(prefix + String(i), "text-color", rgb(255,255,255)) }
 
         setProperty(prefix + String(_k), "text-color", colortoset);
 
-        this.holding = InvbarItems[_k]
+        this.holding = InvbarItems[_k];
 
-    }
+    };
 
     Player.prototype.UpdateInteraction = function(_interactable){
 
-        var id = String(_interactable.X) + String(_interactable.Y)
+        var id = String(_interactable.X) + String(_interactable.Y);
 
-        for (var i = 0 ; i < this.interactablesOcc.length ; i ++) { if (this.interactablesOcc[i] == id) { console.log("YIKES!"); return } }
+        for (var i = 0 ; i < this.interactablesOcc.length ; i ++) { if (this.interactablesOcc[i] == id) { return } }
 
         if (this.holding == undefined) { return }
 
@@ -443,7 +443,7 @@ function Player(id, initState, initDirection, initX, initY){
 
         if (np) { this.planted ++ ; appendItem(this.interactablesOcc, id) }
 
-    }
+    };
     
     Player.prototype.UpdateInput = function(_k, _t){
 
@@ -494,7 +494,7 @@ function Player(id, initState, initDirection, initX, initY){
 
             if (this.input.Inventory[key] == _t) { return }
 
-            this.input.Inventory[key] = _t
+            this.input.Inventory[key] = _t;
 
             if (_t) { this.UpdateInvBar(key) }
 
