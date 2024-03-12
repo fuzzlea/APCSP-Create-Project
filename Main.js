@@ -90,7 +90,7 @@ function Time(){
 
 }
 
-function Plant(id, type, position, timePlanted, interactableIndex){
+function Plant(id, type, position, timePlanted){
 
     // constructors
     this.type = type;
@@ -154,7 +154,7 @@ function Plant(id, type, position, timePlanted, interactableIndex){
 
     // update methods
 
-    Plant.prototype.UpdateFullyGrown = function(_id, pos){
+    Plant.prototype.UpdateFullyGrown = function(_id){
 
         Tween.easePosition(_id, {X: getXPosition(_id), Y: getYPosition(_id)}, {X: getXPosition(_id), Y: getYPosition(_id) - 25}, 75, "easeOut") ;
 
@@ -166,11 +166,12 @@ function Plant(id, type, position, timePlanted, interactableIndex){
             var t2 = setTimeout(function(){ 
 
                 Tween.easeScale(_id, {W: 32, H: 32}, {W: 0, H: 0}, 100, "easeInCubic");
-                removeItem(Player1.interactablesOcc, interactableIndex);
+                clearTimeout(t2);
 
                 var t3 = setTimeout(function(){
 
                     deleteElement(_id);
+                    removeItem( Player1.interactablesOcc , Player1.interactablesOcc.indexOf(_id) )
                     clearTimeout(t3);
         
                 },1000);
@@ -433,16 +434,16 @@ function Player(id, initState, initDirection, initX, initY){
 
     Player.prototype.UpdateInteraction = function(_interactable){
 
-        var _i = 0;
+        var id = String(_interactable.X) + String(_interactable.Y)
 
-        for (var i = 0 ; i < this.interactablesOcc.length ; i ++) { if (this.interactablesOcc[i].position == _interactable) { _i = i; console.log("YIKES!"); return } }
+        for (var i = 0 ; i < this.interactablesOcc.length ; i ++) { if (this.interactablesOcc[i] == id) { console.log("YIKES!"); return } }
 
         if (this.holding == undefined) { return }
 
-        var np = new Plant(this.holding.Type + "_" + this.planted, String(this.holding.Item).toLowerCase(), _interactable, curTime, _i);
+        var np = new Plant(id, String(this.holding.Item).toLowerCase(), _interactable, curTime);
         np.Init();
 
-        if (np) { this.planted ++ ; appendItem(this.interactablesOcc, np) }
+        if (np) { this.planted ++ ; appendItem(this.interactablesOcc, id) }
 
     }
     
@@ -459,10 +460,6 @@ function Player(id, initState, initDirection, initX, initY){
             if (this.input.Movement[key] == _t) { return }
 
             this.input.Movement[key] = _t;
-
-            if (key == "Shift" && _t) { this.movespeed = 2 }
-
-            if (key == "Shift" && !_t) { this.movespeed = 1 }
 
             this.SetDirection(this.GetDirectionFromInput(key));
 
