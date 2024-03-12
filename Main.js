@@ -115,22 +115,24 @@ function Plant(id, type, position, timePlanted){
         var ufg = this.UpdateFullyGrown;
 
         var sOffsets = {
-            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 4},
-            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 1},
-            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 10},
-            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 20}
+            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 3, WORTH: 5, COST: 1},
+            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 5, WORTH: 30, COST: 20},
+            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 8, WORTH: 125, COST: 100},
+            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 15, WORTH: 1250, COST: 1000}
         };
 
         var p = image(_id, sp);
-        setPosition(_id, pos.X + sOffsets[ty].X, pos.Y + sOffsets[ty].Y);
+        Player1.UpdateGold(sOffsets[ty].COST * -1)
 
-        //Tween.easePosition(_id, {X: pos.X + 2, Y: -50}, {X: pos.X + 2, Y: pos.Y + 12}, 200, "bounceOut");
+        //setPosition(_id, pos.X + sOffsets[ty].X, pos.Y + sOffsets[ty].Y);
+        //Tween.easeScale(_id, {W: 0, H: 0}, {W: 32, H: 32}, 50, "easeOut");
 
-        Tween.easeScale(_id, {W: 0, H: 0}, {W: 32, H: 32}, 50, "easeOut");
+        setPosition(_id, 500,500);
+        Tween.easePosition(_id, {X: pos.X + sOffsets[ty].X, Y: -50}, {X: pos.X + sOffsets[ty].X, Y: pos.Y + sOffsets[ty].Y}, 200, "bounceOut");
 
         var interval = setInterval(function(){
             
-            if (st == 6) { fg = true; clearInterval(interval); ufg(_id, pos); return; }
+            if (st == 6) { fg = true; clearInterval(interval); ufg(_id, sOffsets[ty].WORTH); return; }
 
             if (st == 1) { setPosition(_id, pos.X + sOffsets[ty].X2, pos.Y + sOffsets[ty].Y2) }
 
@@ -152,7 +154,7 @@ function Plant(id, type, position, timePlanted){
 
     // update methods
 
-    Plant.prototype.UpdateFullyGrown = function(_id){
+    Plant.prototype.UpdateFullyGrown = function(_id, worth){
 
         Tween.easePosition(_id, {X: getXPosition(_id), Y: getYPosition(_id)}, {X: getXPosition(_id), Y: getYPosition(_id) - 25}, 75, "easeOut") ;
 
@@ -164,6 +166,8 @@ function Plant(id, type, position, timePlanted){
             var t2 = setTimeout(function(){ 
 
                 Tween.easeScale(_id, {W: 32, H: 32}, {W: 0, H: 0}, 100, "easeInCubic");
+                Player1.UpdateGold(worth);
+
                 clearTimeout(t2);
 
                 var t3 = setTimeout(function(){
@@ -235,7 +239,7 @@ function Player(id, initState, initDirection, initX, initY){
         Selected: 1,
 
         Currency: {
-            Gold: 10
+            Gold: 0
         },
 
         Seeds: {
@@ -309,6 +313,8 @@ function Player(id, initState, initDirection, initX, initY){
         onEvent("screen1","keypress",function(k){ if (k.key == "/") { console.log(Player1) } });
 
         setStyle(this.id, "z-index: 5");
+
+        this.UpdateGold(10);
 
         this.UpdateAnimation();
 
@@ -391,6 +397,7 @@ function Player(id, initState, initDirection, initX, initY){
         }
 
         setPosition(this.id,this.xvel,this.yvel);
+        
     };
 
     Player.prototype.UpdateAnimation = function(){
@@ -444,6 +451,19 @@ function Player(id, initState, initDirection, initX, initY){
         if (np) { this.planted ++ ; appendItem(this.interactablesOcc, id) }
 
     };
+
+    Player.prototype.UpdateGold = function(_h){
+
+        if (_h < 0) { Tween.easePosition("MONEY", {X: 225, Y: 368}, {X: 225, Y: 370}, 25, "spikeOut"); } else {
+
+            Tween.easePosition("MONEY", {X: 225, Y: 368}, {X: 225, Y: 366}, 25, "spikeOut");
+
+        }
+
+        this.inventory.Currency.Gold += _h;
+        setProperty("MONEY", "text", String(Player1.inventory.Currency.Gold));
+
+    }
     
     Player.prototype.UpdateInput = function(_k, _t){
 
@@ -521,5 +541,6 @@ onEvent("screen1","keyup",function(k){ Player1.UpdateInput( k, false ) });
 
 Cozy Farm Asset Pack: https://shubibubi.itch.io/cozy-farm
 Sprite Pack (Free Version): https://bagong-games.itch.io/hana-caraka-base-character
+Tween Library: (i made it)
 
 */
