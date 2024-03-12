@@ -139,8 +139,6 @@ function Plant(id, type, position, timePlanted){
             sp = String(ty + "_" + st + ".png");
             setImageURL(_id, sp);
 
-            if (st == 6) { fg = true; clearInterval(interval); ufg(_id, pos); return; }
-
         }, sOffsets[ty].TBS * 1000)
 
         this.sprite = sp;
