@@ -41,6 +41,7 @@ function Time(){
 
     this.hour = 0;
     this.minute = 0;
+    this.currentFrame = "AM"
 
     // init method
 
@@ -69,8 +70,10 @@ function Time(){
 
         this.hour = Math.floor(curTime / 60);
         this.minute = curTime % 60;
-
+        
         if (this.minute < 10) { this.minute = "0" + this.minute }
+
+        if (this.hour > 12) { this.hour = 1; if (this.currentFrame == "AM") { this.currentFrame = "PM" } else { this.currentFrame = "AM" } }
 
         this.hour = String(this.hour);
         this.minute = String(this.minute);
@@ -115,10 +118,10 @@ function Plant(id, type, position, timePlanted){
         var ufg = this.UpdateFullyGrown;
 
         var sOffsets = {
-            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 3, WORTH: 5, COST: 1},
-            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 5, WORTH: 30, COST: 20},
-            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 8, WORTH: 125, COST: 100},
-            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 15, WORTH: 1250, COST: 1000}
+            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 3, WORTH: Player1.inventory.Worths.Tomato, COST: Player1.inventory.Prices.Tomato},
+            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 5, WORTH: Player1.inventory.Worths.Carrot, COST: Player1.inventory.Prices.Carrot},
+            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 8, WORTH: Player1.inventory.Worths.Strawberry, COST: Player1.inventory.Prices.Strawberry},
+            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 15, WORTH: Player1.inventory.Worths.Pumpkin, COST: Player1.inventory.Prices.Pumpkin}
         };
 
         var p = image(_id, sp);
@@ -238,6 +241,20 @@ function Player(id, initState, initDirection, initX, initY){
 
         Selected: 1,
 
+        Prices: {
+            Tomato: 1,
+            Carrot: 100,
+            Strawberry: 2500,
+            Pumpkin: 30000
+        },
+
+        Worths: {
+            Tomato: 2,
+            Carrot: 250,
+            Strawberry: 3000,
+            Pumpkin: 35000
+        },
+
         Currency: {
             Gold: 0
         },
@@ -313,6 +330,11 @@ function Player(id, initState, initDirection, initX, initY){
         onEvent("screen1","keypress",function(k){ if (k.key == "/") { console.log(Player1) } });
 
         setStyle(this.id, "z-index: 5");
+
+        setStyle("LOADING_SCREEN", "z-index: 10");
+        showElement("LOADING_SCREEN");
+
+        Tween.easeScale("LOADING_SCREEN",{W: 1100, H: 1100},{W: 0, H: 0}, 300, "easeOutQuint");
 
         this.UpdateGold(10);
 
@@ -445,6 +467,8 @@ function Player(id, initState, initDirection, initX, initY){
 
         if (this.holding == undefined) { return }
 
+        if (this.inventory.Currency.Gold < this.inventory.Prices[this.holding.Item]) { return }
+
         var np = new Plant(id, String(this.holding.Item).toLowerCase(), _interactable, curTime);
         np.Init();
 
@@ -454,7 +478,11 @@ function Player(id, initState, initDirection, initX, initY){
 
     Player.prototype.UpdateGold = function(_h){
 
-        if (_h < 0) { Tween.easePosition("MONEY", {X: 225, Y: 368}, {X: 225, Y: 370}, 25, "spikeOut"); } else {
+        if (_h < 0) { 
+
+            Tween.easePosition("MONEY", {X: 225, Y: 368}, {X: 225, Y: 370}, 25, "spikeOut");
+
+         } else {
 
             Tween.easePosition("MONEY", {X: 225, Y: 368}, {X: 225, Y: 366}, 25, "spikeOut");
 
