@@ -118,10 +118,15 @@ function Plant(id, type, position, timePlanted){
         var ufg = this.UpdateFullyGrown;
 
         var sOffsets = {
-            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 3, WORTH: Player1.inventory.Worths.Tomato, COST: Player1.inventory.Prices.Tomato},
-            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 5, WORTH: Player1.inventory.Worths.Carrot, COST: Player1.inventory.Prices.Carrot},
-            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 8, WORTH: Player1.inventory.Worths.Strawberry, COST: Player1.inventory.Prices.Strawberry},
-            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 15, WORTH: Player1.inventory.Worths.Pumpkin, COST: Player1.inventory.Prices.Pumpkin}
+            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 3, WORTH: Player1.inventory.Seeds.Tomato.Worth, COST: Player1.inventory.Seeds.Tomato.Price},
+            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 5, WORTH: Player1.inventory.Seeds.Carrot.Worth, COST: Player1.inventory.Seeds.Carrot.Price},
+            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 8, WORTH: Player1.inventory.Seeds.Strawberry.Worth, COST: Player1.inventory.Seeds.Strawberry.Price},
+            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 15, WORTH: Player1.inventory.Seeds.Pumpkin.Worth, COST: Player1.inventory.Seeds.Pumpkin.Price},
+            "corn": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 1, WORTH: Player1.inventory.Seeds.Corn.Worth, COST: Player1.inventory.Seeds.Corn.Price},
+            "potato": {X: 2, Y: 10, X2: 1, Y2: 1, TBS: 1, WORTH: Player1.inventory.Seeds.Potato.Worth, COST: Player1.inventory.Seeds.Potato.Price},
+            "watermelon": {X: 1, Y: 7, X2: 2, Y2: 1, TBS: 1, WORTH: Player1.inventory.Seeds.Watermelon.Worth, COST: Player1.inventory.Seeds.Watermelon.Price},
+            "rose": {X: 3, Y: 4, X2: 1, Y2: 0, TBS: 1, WORTH: Player1.inventory.Seeds.Rose.Worth, COST: Player1.inventory.Seeds.Rose.Price},
+            "starfruit": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 1, WORTH: Player1.inventory.Seeds.Starfruit.Worth, COST: Player1.inventory.Seeds.Starfruit.Price},
         };
 
         var p = image(_id, sp);
@@ -233,6 +238,11 @@ function Player(id, initState, initDirection, initX, initY){
             2: false,
             3: false,
             4: false,
+            5: false,
+            6: false,
+            7: false,
+            8: false,
+            9: false
         }
 
     };
@@ -241,29 +251,84 @@ function Player(id, initState, initDirection, initX, initY){
 
         Selected: 1,
 
-        Prices: {
-            Tomato: 1,
-            Carrot: 100,
-            Strawberry: 2500,
-            Pumpkin: 30000
-        },
-
-        Worths: {
-            Tomato: 2,
-            Carrot: 250,
-            Strawberry: 3000,
-            Pumpkin: 35000
-        },
-
         Currency: {
-            Gold: 0
+            Gold: 999999999999999999999999999999999999999999999999
         },
 
         Seeds: {
-            Carrot: 0,
-            Tomato: 0,
-            Strawberry: 0,
-            Pumpkin: 0
+
+            Carrot: {
+
+                Amount: 0,
+                Price: 100,
+                Worth: 250,
+                
+            },
+
+            Tomato: {
+
+                Amount: 0,
+                Price: 2,
+                Worth: 1,
+                
+            },
+
+            Strawberry: {
+
+                Amount: 0,
+                Price: 2500,
+                Worth: 3000,
+                
+            },
+            
+            Pumpkin: {
+
+                Amount: 0,
+                Price: 30000,
+                Worth: 35000,
+                
+            },
+
+            Corn: {
+
+                Amount: 0,
+                Price: 75000,
+                Worth: 90000,
+                
+            },
+
+            Potato: {
+
+                Amount: 0,
+                Price: 250000,
+                Worth: 300000,
+
+            },
+
+            Watermelon: {
+
+                Amount: 0,
+                Price: 1000000,
+                Worth: 1250000,
+
+            },
+
+            Rose: {
+
+                Amount: 0,
+                Price: 5000000,
+                Worth: 10000000,
+
+            },
+
+            Starfruit: {
+
+                Amount: 0,
+                Price: 100000000,
+                Worth: 300000000,
+
+            }
+
         },
 
     };
@@ -448,10 +513,15 @@ function Player(id, initState, initDirection, initX, initY){
             2: {Type: "Seeds", Item: "Carrot"},
             3: {Type: "Seeds", Item: "Strawberry"},
             4: {Type: "Seeds", Item: "Pumpkin"},
+            5: {Type: "Seeds", Item: "Corn"},
+            6: {Type: "Seeds", Item: "Potato"},
+            7: {Type: "Seeds", Item: "Watermelon"},
+            8: {Type: "Seeds", Item: "Rose"},
+            9: {Type: "Seeds", Item: "Starfruit"},
 
         };
 
-        for (var i = 1 ; i < 5 ; i ++) { setProperty(prefix + String(i), "text-color", rgb(255,255,255)) }
+        for (var i = 1 ; i < 10 ; i ++) { setProperty(prefix + String(i), "text-color", rgb(255,255,255)) }
 
         setProperty(prefix + String(_k), "text-color", colortoset);
 
@@ -467,7 +537,7 @@ function Player(id, initState, initDirection, initX, initY){
 
         if (this.holding == undefined) { return }
 
-        if (this.inventory.Currency.Gold < this.inventory.Prices[this.holding.Item]) { return }
+        if (this.inventory.Currency.Gold < this.inventory.Seeds[this.holding.Item].Price) { return }
 
         var np = new Plant(id, String(this.holding.Item).toLowerCase(), _interactable, curTime);
         np.Init();
