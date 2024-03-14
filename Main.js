@@ -8,9 +8,9 @@ var curTime = 60;
 
 function abbreviateNum(number, decPlaces) {
 
-    var decPlaces = Math.pow(10, decPlaces);
+    decPlaces = Math.pow(10, decPlaces);
   
-    var abbrev = ['k', 'm', 'b', 't'];
+    var abbrev = ['k', 'm', 'b', 't', 'qd', 'qi', 'sx', 'sp'];
   
     for (var i = abbrev.length - 1; i >= 0; i--) {
       
@@ -18,7 +18,7 @@ function abbreviateNum(number, decPlaces) {
   
       if (size <= number) {
 
-        var number = Math.round((number * decPlaces) / size) / decPlaces;
+        number = Math.round((number * decPlaces) / size) / decPlaces;
 
         if (number == 1000 && i < abbrev.length - 1) {
 
@@ -285,7 +285,7 @@ function Player(id, initState, initDirection, initX, initY){
         Selected: 1,
 
         Currency: {
-            Gold: 178249
+            Gold: 999999999999999
         },
 
         Seeds: {
@@ -592,7 +592,7 @@ function Player(id, initState, initDirection, initX, initY){
         }
 
         this.inventory.Currency.Gold += _h;
-        setProperty("MONEY", "text", String(abbreviateNum(Player1.inventory.Currency.Gold, 1)));
+        setProperty("MONEY", "text", String(abbreviateNum(Player1.inventory.Currency.Gold, 2)));
 
     }
     
