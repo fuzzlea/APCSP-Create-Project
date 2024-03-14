@@ -5,6 +5,39 @@ var TIME_INTERVAL = setInterval(function(){ GameTime.UpdateTime() }, 500);
 var curTime = 60;
 
 // func
+
+function abbreviateNum(number, decPlaces) {
+
+    var decPlaces = Math.pow(10, decPlaces);
+  
+    var abbrev = ['k', 'm', 'b', 't'];
+  
+    for (var i = abbrev.length - 1; i >= 0; i--) {
+      
+      var size = Math.pow(10, (i + 1) * 3);
+  
+      if (size <= number) {
+
+        var number = Math.round((number * decPlaces) / size) / decPlaces;
+
+        if (number == 1000 && i < abbrev.length - 1) {
+
+          number = 1;
+          i++;
+
+        }
+
+        number += abbrev[i];
+
+        break;
+
+      }
+
+    }
+  
+    return number
+}
+
 function returnListFromObj(obj){ return Object.keys(obj); }
 
 function checkInRange(t, min, max) { return t >= min && t <= max }
@@ -122,7 +155,7 @@ function Plant(id, type, position, timePlanted){
             "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 3, WORTH: Player1.inventory.Seeds.Carrot.Worth, COST: Player1.inventory.Seeds.Carrot.Price},
             "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 5, WORTH: Player1.inventory.Seeds.Strawberry.Worth, COST: Player1.inventory.Seeds.Strawberry.Price},
             "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 7, WORTH: Player1.inventory.Seeds.Pumpkin.Worth, COST: Player1.inventory.Seeds.Pumpkin.Price},
-            "corn": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 10, WORTH: Player1.inventory.Seeds.Corn.Worth, COST: Player1.inventory.Seeds.Corn.Price},
+            "corn": {X: 1, Y: 7, X2: 3, Y2: 0, TBS: 10, WORTH: Player1.inventory.Seeds.Corn.Worth, COST: Player1.inventory.Seeds.Corn.Price},
             "potato": {X: 2, Y: 10, X2: 1, Y2: 1, TBS: 13, WORTH: Player1.inventory.Seeds.Potato.Worth, COST: Player1.inventory.Seeds.Potato.Price},
             "watermelon": {X: 1, Y: 7, X2: 2, Y2: 1, TBS: 18, WORTH: Player1.inventory.Seeds.Watermelon.Worth, COST: Player1.inventory.Seeds.Watermelon.Price},
             "rose": {X: 3, Y: 4, X2: 1, Y2: 0, TBS: 24, WORTH: Player1.inventory.Seeds.Rose.Worth, COST: Player1.inventory.Seeds.Rose.Price},
@@ -252,7 +285,7 @@ function Player(id, initState, initDirection, initX, initY){
         Selected: 1,
 
         Currency: {
-            Gold: 999999999999999999999999999999999999999999999999
+            Gold: 178249
         },
 
         Seeds: {
@@ -559,7 +592,7 @@ function Player(id, initState, initDirection, initX, initY){
         }
 
         this.inventory.Currency.Gold += _h;
-        setProperty("MONEY", "text", String(Player1.inventory.Currency.Gold));
+        setProperty("MONEY", "text", String(abbreviateNum(Player1.inventory.Currency.Gold, 1)));
 
     }
     
