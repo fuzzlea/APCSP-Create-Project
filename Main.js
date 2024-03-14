@@ -118,15 +118,15 @@ function Plant(id, type, position, timePlanted){
         var ufg = this.UpdateFullyGrown;
 
         var sOffsets = {
-            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 3, WORTH: Player1.inventory.Seeds.Tomato.Worth, COST: Player1.inventory.Seeds.Tomato.Price},
-            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 5, WORTH: Player1.inventory.Seeds.Carrot.Worth, COST: Player1.inventory.Seeds.Carrot.Price},
-            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 8, WORTH: Player1.inventory.Seeds.Strawberry.Worth, COST: Player1.inventory.Seeds.Strawberry.Price},
-            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 15, WORTH: Player1.inventory.Seeds.Pumpkin.Worth, COST: Player1.inventory.Seeds.Pumpkin.Price},
-            "corn": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 1, WORTH: Player1.inventory.Seeds.Corn.Worth, COST: Player1.inventory.Seeds.Corn.Price},
-            "potato": {X: 2, Y: 10, X2: 1, Y2: 1, TBS: 1, WORTH: Player1.inventory.Seeds.Potato.Worth, COST: Player1.inventory.Seeds.Potato.Price},
-            "watermelon": {X: 1, Y: 7, X2: 2, Y2: 1, TBS: 1, WORTH: Player1.inventory.Seeds.Watermelon.Worth, COST: Player1.inventory.Seeds.Watermelon.Price},
-            "rose": {X: 3, Y: 4, X2: 1, Y2: 0, TBS: 1, WORTH: Player1.inventory.Seeds.Rose.Worth, COST: Player1.inventory.Seeds.Rose.Price},
-            "starfruit": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 1, WORTH: Player1.inventory.Seeds.Starfruit.Worth, COST: Player1.inventory.Seeds.Starfruit.Price},
+            "tomato": {X: 2, Y: 12, X2: 0, Y2: 2, TBS: 2, WORTH: Player1.inventory.Seeds.Tomato.Worth, COST: Player1.inventory.Seeds.Tomato.Price},
+            "carrot": {X: 0, Y: 10, X2: 1, Y2: 4, TBS: 3, WORTH: Player1.inventory.Seeds.Carrot.Worth, COST: Player1.inventory.Seeds.Carrot.Price},
+            "strawberry": {X: 2, Y: 12, X2: 4, Y2: 0, TBS: 5, WORTH: Player1.inventory.Seeds.Strawberry.Worth, COST: Player1.inventory.Seeds.Strawberry.Price},
+            "pumpkin": {X: 0, Y: 10, X2: 1, Y2: 7, TBS: 7, WORTH: Player1.inventory.Seeds.Pumpkin.Worth, COST: Player1.inventory.Seeds.Pumpkin.Price},
+            "corn": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 10, WORTH: Player1.inventory.Seeds.Corn.Worth, COST: Player1.inventory.Seeds.Corn.Price},
+            "potato": {X: 2, Y: 10, X2: 1, Y2: 1, TBS: 13, WORTH: Player1.inventory.Seeds.Potato.Worth, COST: Player1.inventory.Seeds.Potato.Price},
+            "watermelon": {X: 1, Y: 7, X2: 2, Y2: 1, TBS: 18, WORTH: Player1.inventory.Seeds.Watermelon.Worth, COST: Player1.inventory.Seeds.Watermelon.Price},
+            "rose": {X: 3, Y: 4, X2: 1, Y2: 0, TBS: 24, WORTH: Player1.inventory.Seeds.Rose.Worth, COST: Player1.inventory.Seeds.Rose.Price},
+            "starfruit": {X: 0, Y: 0, X2: 0, Y2: 0, TBS: 30, WORTH: Player1.inventory.Seeds.Starfruit.Worth, COST: Player1.inventory.Seeds.Starfruit.Price},
         };
 
         var p = image(_id, sp);
