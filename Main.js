@@ -285,7 +285,7 @@ function Player(id, initState, initDirection, initX, initY){
         Selected: 1,
 
         Currency: {
-            Gold: 999999999999999
+            Gold: 0
         },
 
         Seeds: {
@@ -301,8 +301,8 @@ function Player(id, initState, initDirection, initX, initY){
             Tomato: {
 
                 Amount: 0,
-                Price: 2,
-                Worth: 1,
+                Price: 1,
+                Worth: 2,
                 
             },
 
