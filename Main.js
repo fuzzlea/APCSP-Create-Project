@@ -1,8 +1,6 @@
 // vars
-var PLAYER_MOVE_INTERVAL = setInterval(function(){ Player1.UpdatePosition() }, 17 );
-var TIME_INTERVAL = setInterval(function(){ GameTime.UpdateTime() }, 500);
-
 var curTime = 60;
+var dataKey = ".M($!:gLp_-C";
 
 // func
 
@@ -35,7 +33,7 @@ function abbreviateNum(number, decPlaces) {
 
     }
   
-    return number
+    return number;
 }
 
 function returnListFromObj(obj){ return Object.keys(obj); }
@@ -74,11 +72,13 @@ function Time(){
 
     this.hour = 0;
     this.minute = 0;
-    this.currentFrame = "AM"
+    this.currentFrame = "AM";
 
     // init method
 
     Time.prototype.Init = function(){
+
+        var TIME_INTERVAL = setInterval(function(){ GameTime.UpdateTime() }, 500);
 
         this.SetTime();
         this.UpdateUI();
@@ -163,7 +163,7 @@ function Plant(id, type, position, timePlanted){
         };
 
         var p = image(_id, sp);
-        Player1.UpdateGold(sOffsets[ty].COST * -1)
+        Player1.UpdateGold(sOffsets[ty].COST * -1);
 
         //setPosition(_id, pos.X + sOffsets[ty].X, pos.Y + sOffsets[ty].Y);
         //Tween.easeScale(_id, {W: 0, H: 0}, {W: 32, H: 32}, 50, "easeOut");
@@ -425,7 +425,13 @@ function Player(id, initState, initDirection, initX, initY){
 
     Player.prototype.Init = function(){
 
-        onEvent("screen1","keypress",function(k){ if (k.key == "/") { console.log(Player1) } });
+        onEvent("screen1","keypress",function(k){ if (k.key == "/") { console.log(Player1); saveData("admin") } });
+        onEvent("screen1","keydown",function(k){ Player1.UpdateInput( k, true ) });
+        onEvent("screen1","keyup",function(k){ Player1.UpdateInput( k, false ) });
+
+        var PLAYER_MOVE_INTERVAL = setInterval(function(){ Player1.UpdatePosition() }, 17 );
+
+        setScreen("screen1");
 
         setStyle(this.id, "z-index: 5");
 
@@ -433,8 +439,6 @@ function Player(id, initState, initDirection, initX, initY){
         showElement("LOADING_SCREEN");
 
         Tween.easeScale("LOADING_SCREEN",{W: 1100, H: 1100},{W: 0, H: 0}, 300, "easeOutQuint");
-
-        this.UpdateGold(10);
 
         this.UpdateAnimation();
 
@@ -594,7 +598,7 @@ function Player(id, initState, initDirection, initX, initY){
         this.inventory.Currency.Gold += _h;
         setProperty("MONEY", "text", String(abbreviateNum(Player1.inventory.Currency.Gold, 2)));
 
-    }
+    };
     
     Player.prototype.UpdateInput = function(_k, _t){
 
@@ -656,17 +660,183 @@ function Player(id, initState, initDirection, initX, initY){
 }
 
 // init
+setScreen("loginPage");
+setText("succMessage", "");
 
 var Player1 = new Player("PLAYER", "idle", "d", 105, 280);
-Player1.Init();
-
 var GameTime = new Time();
-GameTime.Init();
+
+// saving / loading data
+function login(_username, _password){
+
+    setText("succMessage", "");
+
+    var encryptedData = {
+
+        username: Cryptor.encrypt(String(_username), dataKey),
+        pass: Cryptor.encrypt(String(_password), dataKey),
+
+    };
+    
+    var data = readRecordsSync("PlayerId");
+    var hasAccount = false;
+    var correctPass = false;
+
+    if (data.length > 0) {
+
+        for (var i = 0 ; i < data.length ; i ++) {
+
+            if (data[i].username == encryptedData.username && data[i].pass == encryptedData.pass) {
+
+                // log in
+                hasAccount = true;
+                correctPass = true;
+                break;
+
+            } else if (data[i].username == encryptedData.username && data[i].pass != encryptedData.pass) {
+
+                // incorrect pass
+                hasAccount = true;
+                correctPass = false;
+                break;
+
+            }
+
+        }
+
+        if (hasAccount && correctPass) {
+
+            setText("succMessage", "log in " + _username);
+
+            setScreen("screen1");
+            Player1.Init();
+            GameTime.Init();
+            loadData(encryptedData.username);
+
+        } else if (hasAccount && correctPass == false) {
+
+            setText("succMessage", "incorrect pass for: " + _username);
+
+        } else if (hasAccount == false) {
+
+            setText("succMessage", "created account: " + _username);
+            createNewAccount(encryptedData);
+
+        }
+
+    } else {
+
+        createNewAccount(encryptedData);
+
+    }
+
+}
+
+function createNewAccount(encryptedData){
+
+    createRecord("PlayerId", {username: encryptedData.username, pass: encryptedData.pass}, function(){ console.log("Created Account: " + Cryptor.decrypt(encryptedData.username, dataKey) + "!"); return });
+
+}
+
+function saveData(_username){
+
+    var encryptedData = {
+
+        username: Cryptor.encrypt(String(_username), dataKey),
+        Gold: Cryptor.encrypt(String(Player1.inventory.Currency.Gold), dataKey),
+        Planted: Cryptor.encrypt(String(Player1.planted), dataKey),
+        Time: Cryptor.encrypt(String(curTime), dataKey),
+
+    };
+
+    var data = readRecordsSync("PlayerData");
+    var newAccount = true;
+    var accId = 0;
+
+    if (data.length > 0) {
+
+        for (var i = 0 ; i < data.length ; i ++) {
+
+            if (data[i].username == encryptedData.username) {
+
+                newAccount = false;
+                accId = data[i].id;
+                break;
+
+            }   
+
+        }
+
+        if (newAccount) {
+
+            createRecord("PlayerData", encryptedData, function(){ console.log("Data Saved!"); return true });
+
+        } else {
+
+            encryptedData.id = accId;
+
+            updateRecord("PlayerData", encryptedData, function(){ console.log("Player | " + _username + "'s | Data has been saved!") });
+
+        }
+
+    } else {
+
+        createRecord("PlayerData", encryptedData, function(){ console.log("Data Saved!"); return true });
+
+    }
+
+}
+
+function loadData(_username){
+
+    var data = readRecordsSync("PlayerData");
+    var hasAccount = false;
+
+    if (data.length > 0) {
+
+        for (var i = 0 ; i < data.length ; i ++) {
+
+            if (data[i].username == _username) {
+
+                hasAccount = true;
+                break;
+
+            }
+
+        }
+
+        if (hasAccount) {
+
+            Player1.UpdateGold(Number(Cryptor.decrypt(data[i].Gold, dataKey)));
+            Player1.planted = Number(Cryptor.decrypt(data[i].Planted, dataKey));
+            curTime = Number(Cryptor.decrypt(data[i].Time, dataKey));
+
+        } else {
+
+            curTime = 60;
+            Player1.UpdateGold(10);
+            Player1.planted = 0;
+
+        }
+
+    } else {
+
+        // no data was found
+        curTime = 60;
+        Player1.UpdateGold(10);
+        Player1.planted = 0;
+
+    }
+
+}
 
 // onev
 
-onEvent("screen1","keydown",function(k){ Player1.UpdateInput( k, true ) });
-onEvent("screen1","keyup",function(k){ Player1.UpdateInput( k, false ) });
+onEvent("login_button", "click", function(){
+
+    login(getText("login_username"), getText("login_password"));
+
+});
 
 /* citations
 
