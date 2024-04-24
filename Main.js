@@ -232,6 +232,7 @@ function Player(id, initState, initDirection, initX, initY){
     // constructors
 
     this.id = id;
+    this.username = "";
     this.state = initState || "idle";
     this.direction = initDirection || "d";
 
@@ -425,7 +426,7 @@ function Player(id, initState, initDirection, initX, initY){
 
     Player.prototype.Init = function(){
 
-        onEvent("screen1","keypress",function(k){ if (k.key == "/") { console.log(Player1); saveData("admin") } });
+        onEvent("screen1","keypress",function(k){ if (k.key == "/") { console.log(Player1); saveData(Player1.username) } });
         onEvent("screen1","keydown",function(k){ Player1.UpdateInput( k, true ) });
         onEvent("screen1","keyup",function(k){ Player1.UpdateInput( k, false ) });
 
@@ -791,6 +792,8 @@ function loadData(_username){
 
     var data = readRecordsSync("PlayerData");
     var hasAccount = false;
+
+    Player1.username = Cryptor.decrypt(_username, dataKey);
 
     if (data.length > 0) {
 
