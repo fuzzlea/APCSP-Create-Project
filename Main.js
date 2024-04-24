@@ -442,6 +442,7 @@ function Player(id, initState, initDirection, initX, initY){
         Tween.easeScale("LOADING_SCREEN",{W: 1100, H: 1100},{W: 0, H: 0}, 300, "easeOutQuint");
 
         this.UpdateAnimation();
+        this.UpdateGold(0);
 
     };
 
@@ -597,6 +598,33 @@ function Player(id, initState, initDirection, initX, initY){
         }
 
         this.inventory.Currency.Gold += _h;
+
+        var labelsAndPrices = {
+
+            "label7": 1,
+            "label8": 100,
+            "label9": 2500,
+            "label10": 30000,
+            "label11": 75000,
+            "label12": 250000,
+            "label13": 1000000,
+            "label14": 5000000,
+            "label15": 10000000,
+
+        }
+
+        for (var i = 0 ; i < returnListFromObj(labelsAndPrices).length ; i ++) {
+
+            setProperty(returnListFromObj(labelsAndPrices)[i], "text-color", rgb(255,0,0));
+
+            if (Player1.inventory.Currency.Gold >= labelsAndPrices[returnListFromObj(labelsAndPrices)[i]]) {
+
+                setProperty(returnListFromObj(labelsAndPrices)[i], "text-color", rgb(0,255,0));
+
+            }
+
+        }
+
         setProperty("MONEY", "text", String(abbreviateNum(Player1.inventory.Currency.Gold, 2)));
 
     };
